@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-search-box',
@@ -7,5 +7,12 @@ import { Component } from '@angular/core';
 })
 export class SearchBoxComponent {
 
+  @ViewChild('txtTag')
+  public tagInput!:ElementRef<HTMLInputElement>
+
+  searchTag(){
+    const newTag = this.tagInput.nativeElement.value
+    console.log({newTag})
+  }
 }
   
