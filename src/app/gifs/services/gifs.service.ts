@@ -1,13 +1,20 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { environment } from '../../../environments/environments';
+import { HttpClient } from '@angular/common/http';
+import { Gif, SearchResponse } from '../interfaces/gifs.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GifsService {
 
-  private _tagsHistory:string[] = []
+  gifList:Gif[] = []
 
-  constructor() { }
+  private _tagsHistory:string[] = []
+  private apiKey = environment.apiKey;
+  private urlBase = environment.urlBase;
+
+  private http = inject(HttpClient);
 
   get tagsHistory(){
     return [...this._tagsHistory];
@@ -25,5 +32,17 @@ export class GifsService {
   searchTag(tag:string):void{
     if(tag.length === 0) return
     this.organizeHistoy(tag)
+
+    const params = {
+      api_key: this.apiKey,
+      q: tag,
+      limit: 10
+    }
+
+    this.http.get<SearchResponse>(`${this.urlBase}/search`, {params})
+      .subscribe(response => {
+        this.gifList = response.data
+        console.log(this.gifList)
+      })
   }
 }
